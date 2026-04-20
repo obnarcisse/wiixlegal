@@ -3,6 +3,7 @@
   const siteName = config.siteName || 'Wiix';
   const siteDomain = config.siteDomain || 'https://oniix.app';
   const supportEmail = (config.supportEmail || '').trim();
+  const supportPhone = (config.supportPhone || '').trim();
   const deletionFormUrl = (config.deletionFormUrl || '').trim();
 
   const page = document.body.dataset.page || '';
@@ -42,8 +43,14 @@
       )}`
     : '';
 
+  const phoneUrl = supportPhone ? `tel:${supportPhone.replace(/\s+/g, '')}` : '';
+
   document.querySelectorAll('[data-support-email]').forEach((node) => {
     node.textContent = supportEmail;
+  });
+
+  document.querySelectorAll('[data-support-phone]').forEach((node) => {
+    node.textContent = supportPhone;
   });
 
   document.querySelectorAll('[data-mailto-link]').forEach((node) => {
@@ -66,6 +73,16 @@
     }
   });
 
+  document.querySelectorAll('[data-phone-link]').forEach((node) => {
+    if (!(node instanceof HTMLAnchorElement)) return;
+    if (phoneUrl) {
+      node.href = phoneUrl;
+      node.hidden = false;
+    } else {
+      node.hidden = true;
+    }
+  });
+
   document.querySelectorAll('[data-support-email-block]').forEach((node) => {
     node.hidden = !supportEmail;
   });
@@ -74,8 +91,12 @@
     node.hidden = !deletionFormUrl;
   });
 
+  document.querySelectorAll('[data-support-phone-block]').forEach((node) => {
+    node.hidden = !supportPhone;
+  });
+
   document.querySelectorAll('[data-support-missing]').forEach((node) => {
-    node.hidden = Boolean(supportEmail || deletionFormUrl);
+    node.hidden = Boolean(supportEmail || supportPhone || deletionFormUrl);
   });
 
   const menuToggle = document.querySelector('[data-menu-toggle]');
